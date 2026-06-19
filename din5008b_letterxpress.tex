@@ -34,6 +34,10 @@
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
+\setcounter{secnumdepth}{0}
+
+% Pandoc tight list support
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
 % --- Metadata from YAML ---
 $if(sender-name)$
@@ -85,10 +89,10 @@ $endif$
   \node[anchor=north east, text width=60mm, align=right, font=\fontsize{9}{11}\selectfont]
     at ([xshift=-20mm, yshift=-32mm]current page.north east) {
     \textcolor{black}{%
-      $if(sender-name)$\sendername\\$endif$
-      $if(sender-street)$\senderstreet, \sendercity\\$endif$
-      $if(sender-phone)$\senderphone\\$endif$
-      $if(sender-email)$\senderemail$endif$
+      $if(sender-name)$\sendername\\$endif$%
+      $if(sender-street)$\senderstreet, \sendercity\\$endif$%
+      $if(sender-phone)$\senderphone\\$endif$%
+      $if(sender-email)$\senderemail$endif$%
     }
   };
 
