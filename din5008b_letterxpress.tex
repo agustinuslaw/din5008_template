@@ -18,49 +18,56 @@
 \usepackage{fancyhdr}
 \usepackage{parskip}
 \usepackage{hyperref}
+\usepackage{lastpage}
 
 \pagestyle{fancy}
 \fancyhf{}
 \renewcommand{\headrulewidth}{0pt}
-\fancyfoot[C]{\footnotesize\textcolor{black}{Seite \thepage}}
+\fancyfoot[C]{\footnotesize\textcolor{black}{\thepage / \pageref{LastPage}}}
 
 % Suppress page number on first page (handled by letter layout)
 \fancypagestyle{firstpage}{
   \fancyhf{}
   \renewcommand{\headrulewidth}{0pt}
-  \fancyfoot[C]{\footnotesize\textcolor{black}{Seite \thepage}}
+  \fancyfoot[C]{\footnotesize\textcolor{black}{\thepage / \pageref{LastPage}}}
 }
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
 
 % --- Metadata from YAML ---
-$if(absender-name)$
-\newcommand{\absendername}{$absender-name$}
+$if(sender-name)$
+\newcommand{\sendername}{$sender-name$}
 $endif$
-$if(absender-strasse)$
-\newcommand{\absenderstrasse}{$absender-strasse$}
+$if(sender-street)$
+\newcommand{\senderstreet}{$sender-street$}
 $endif$
-$if(absender-ort)$
-\newcommand{\absenderort}{$absender-ort$}
+$if(sender-city)$
+\newcommand{\sendercity}{$sender-city$}
 $endif$
-$if(absender-telefon)$
-\newcommand{\absendertelefon}{$absender-telefon$}
+$if(sender-phone)$
+\newcommand{\senderphone}{$sender-phone$}
 $endif$
-$if(absender-kurz)$
-\newcommand{\absenderkurz}{$absender-kurz$}
+$if(sender-email)$
+\newcommand{\senderemail}{$sender-email$}
 $endif$
-$if(empfaenger)$
-\newcommand{\empfaenger}{$for(empfaenger)$$empfaenger$$sep$ \\ $endfor$}
+$if(sender-short)$
+\newcommand{\sendershort}{$sender-short$}
 $endif$
-$if(datum)$
-\newcommand{\datum}{$datum$}
+$if(recipient)$
+\newcommand{\recipient}{$for(recipient)$$recipient$$sep$ \\ $endfor$}
 $endif$
-$if(ort)$
-\newcommand{\ort}{$ort$}
+$if(date)$
+\newcommand{\letterdate}{$date$}
 $endif$
-$if(betreff)$
-\newcommand{\betreff}{$betreff$}
+$if(city)$
+\newcommand{\lettercity}{$city$}
+$endif$
+$if(subject)$
+\newcommand{\lettersubject}{$subject$}
+$endif$
+$if(closing)$
+\newcommand{\letterclosing}{$closing$}
 $endif$
 
 \usepackage{tikz}
@@ -73,32 +80,33 @@ $endif$
 
 \begin{tikzpicture}[remember picture, overlay]
 
-  % --- Informationsblock (top right, sender info) ---
+  % --- Information block (top right, sender info) ---
   % Starts at 32mm from top, right-aligned to 20mm from right edge
   \node[anchor=north east, text width=60mm, align=right, font=\fontsize{9}{11}\selectfont]
     at ([xshift=-20mm, yshift=-32mm]current page.north east) {
     \textcolor{black}{%
-      $if(absender-name)$\absendername\\$endif$
-      $if(absender-strasse)$\absenderstrasse, \absenderort\\$endif$
-      $if(absender-telefon)$\absendertelefon$endif$
+      $if(sender-name)$\sendername\\$endif$
+      $if(sender-street)$\senderstreet, \sendercity\\$endif$
+      $if(sender-phone)$\senderphone\\$endif$
+      $if(sender-email)$\senderemail$endif$
     }
   };
 
-  % --- Rücksendeangabe (return address, small underlined) ---
+  % --- Return address line (small underlined) ---
   % Positioned to fit letterxpress address window
-  $if(absender-kurz)$
+  $if(sender-short)$
   \node[anchor=west, font=\fontsize{7}{9}\selectfont]
     at ([xshift=20mm, yshift=-49mm]current page.north west) {
-    \textcolor{black}{\underline{\absenderkurz}}
+    \textcolor{black}{\underline{\sendershort}}
   };
   $endif$
 
-  % --- Anschriftzone (recipient address) ---
+  % --- Address zone (recipient address) ---
   % DIN 5008 Form B: starts 67mm from top (after 45mm + 5mm + 17mm zone)
   % 20mm from left, 85mm wide
   \node[anchor=north west, text width=85mm, align=left, font=\fontsize{11}{14}\selectfont]
     at ([xshift=20mm, yshift=-67mm]current page.north west) {
-    $if(empfaenger)$\empfaenger$endif$
+    $if(recipient)$\recipient$endif$
   };
 
 \end{tikzpicture}
@@ -109,14 +117,14 @@ $endif$
 
 \begin{flushright}
 \fontsize{10}{12}\selectfont
-$if(ort)$\ort, $endif$$if(datum)$\datum$endif$
+$if(city)$\lettercity, $endif$$if(date)$\letterdate$endif$
 \end{flushright}
 
 \vspace{8mm}
 
 % --- Subject ---
-$if(betreff)$
-{\fontsize{11}{14}\selectfont\textbf{\betreff}}
+$if(subject)$
+{\fontsize{11}{14}\selectfont\textbf{\lettersubject}}
 
 \vspace{6mm}
 $endif$
@@ -125,11 +133,15 @@ $endif$
 \fontsize{10}{13}\selectfont
 $body$
 
-$if(absender-name)$
+$if(sender-name)$
 \par\vspace{6mm}
+$if(closing)$
+\letterclosing
+$else$
 Mit freundlichen Grüßen
+$endif$
 \par\vspace{15mm}
-\absendername
+\sendername
 $endif$
 
 \end{document}
